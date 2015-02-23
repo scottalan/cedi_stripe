@@ -1,0 +1,4 @@
+name = Cedi Stripe
+description = Cedi integration with the Stripe payment system
+core = 7.x
+pakage = Cedi

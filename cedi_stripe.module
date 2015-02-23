@@ -1,0 +1,45 @@
+<?php
+
+// @todo: Do a file_get_contents on a custom file on the server.
+define('TEST_SECRET_KEY', 'put_secret_key_here');
+define('TEST_PUB_KEY', 'put_public_key_here');
+
+include_once('includes/customer.inc');
+include_once('includes/charge.inc');
+
+/**
+ * Implements hook_libraries_info().
+ */
+function cedi_stripe_libraries_info() {
+  return array(
+    'stripe-php' => array(
+      'name' => 'Stripe API Client Library for PHP',
+      'vendor url' => 'https://stripe.com/',
+      'download url' => 'https://github.com/stripe/stripe-php',
+      'dependencies' => array(),
+      'version arguments' => array(
+        'file' => 'VERSION',
+        'pattern' => '/(\d+\.\d+(\.\d+)?)/',
+      ),
+      'files' => array(
+        'php' => array(
+          'lib/Stripe.php',
+        ),
+      ),
+    ),
+  );
+}
+
+/**
+ * Brings the stripe php client library into scope
+ */
+function cedi_stripe_load_library() {
+  $library = libraries_load('stripe-php');
+  if (!$library || empty($library['loaded'])) {
+    watchdog('cedi_stripe', 'Failure to load Stripe API PHP Client Library.', array(), WATCHDOG_CRITICAL);
+    return FALSE;
+  }
+  else {
+    return TRUE;
+  }
+}
